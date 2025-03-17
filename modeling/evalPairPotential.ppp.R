@@ -13,31 +13,18 @@ evalPairPotential.ppp = function (X, P, E, pairpot, potpars, R)
   J <- cl$j
   D <- cl$d
 
-  # print(identical(data.frame(X), data.frame(P)))
-  if (identical(data.frame(X), data.frame(P))){
-#    cl <- crosspairs(X, P, R, what = "ijd")
-#    I <- cl$i
-#    J <- cl$j
-#    D <- cl$d
-    same_value_indices <- which(I == J)
-    I <- I[-same_value_indices]
-    J <- J[-same_value_indices]
-    D <- D[-same_value_indices]
-  } 
-#  else{
-#    cl <- crosspairs(X, P, R, what = "all")
-#    I <- cl$i
-#    J <- cl$j
-#    D <- cl$d
-#    xI <-cl$xi
-#    yI <-cl$yi
-#    xJ <-cl$xj
-#    yJ <-cl$yj
-#    same_coord_indices <- which(xI == xJ & yI == yJ)
-#    I <- I[-same_coord_indices]
-#    J <- J[-same_coord_indices]
-#    D <- D[-same_coord_indices]
-#  }
+  # if (identical(data.frame(X), data.frame(P))){
+  #   same_value_indices <- which(I == J)
+  #   I <- I[-same_value_indices]
+  #   J <- J[-same_value_indices]
+  #   D <- D[-same_value_indices]
+  # } 
+  same_value_indices <- which(D == 0)
+  I <- I[-same_value_indices]
+  J <- J[-same_value_indices]
+  D <- D[-same_value_indices]
+  
+
   D <- matrix(D, ncol = 1)
   
   if (nX == 0 || nP == 0 || length(I) == 0) {

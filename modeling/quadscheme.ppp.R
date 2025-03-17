@@ -1,9 +1,9 @@
-quadscheme.ppp = function (data, dummy, method = "grid", ...) 
+quadscheme.ppp = function (data, dummy, method = "d", ...) 
 {
   data <- as.ppp(data)
   print(data)
   if (missing(dummy)) {
-    dummy <- default.dummy.ppp(data, method = method, eps = 50, ...)
+    dummy <- default.dummy.ppp(data, method = method,  ...)
     dp <- attr(dummy, "dummy.parameters")
     wp <- attr(dummy, "weight.parameters")
   }

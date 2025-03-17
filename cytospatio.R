@@ -8,8 +8,7 @@ source("visualization.R")
 source("simulation.R")
 
 packages <- c("spatstat", "spatstat.utils", "spatstat.data", "ggplot2", 
-              "dplyr", "permute", "data.table", "igraph", "proxy", "deldir", 
-              "readr", "rgeos", "sp")
+              "dplyr", "permute", "data.table", "igraph", "deldir", "sf")
 for (pkg in packages) {
   if (!require(pkg, character.only = TRUE)) {
     install.packages(pkg)
@@ -27,7 +26,7 @@ cytospatio <- function(input_file, output_dir, TR = 500, IR = 100, HR = 1) {
   }
 
   # Concatenate all quadrature schemes
-  # input_dir = basename(input_file)
+  input_dir = basename(input_file)
   quadrature_scheme_concatenation(input_dir, output_dir, TR, IR, HR)
 
   # Train the multirange multitype point process model
@@ -35,7 +34,7 @@ cytospatio <- function(input_file, output_dir, TR = 500, IR = 100, HR = 1) {
 
   # Visualize the spatial relationships between cell types
   visualization(input_file, output_dir, TR, IR, HR)
-  
+
   # Simulate the synthetic tissue image with learned spatial relationships
   simulation(input_file, output_dir, TR, IR, HR)
 }

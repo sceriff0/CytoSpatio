@@ -19,7 +19,7 @@ default.n.tiling.ppp = function (X, nd = NULL, ntile = NULL, npix = NULL, eps = 
   #print(5 * ceiling(2 * sqrt(X$n)/10))
   #ndminX <- pmax(ndummy.min, 5 * ceiling(2 * sqrt(X$n)/10))
   #ndminX <- ensure2vector(ndminX)
-  ndminX <- 32
+  ndminX <- 0 
   if (!is.null(eps)) {
     eps <- ensure2print(eps, verbose)
     Xbox <- as.rectangle(as.owin(X))
