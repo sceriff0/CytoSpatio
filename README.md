@@ -1,7 +1,7 @@
 # CytoSpatio: Learning Cell Type Spatial Relationships
 Haoran Chen and Robert F. Murphy\
 Carnegie Mellon University\
-V1.1.0 Feb 11, 2025
+V0.1.0 Feb 11, 2025
 
 CytoSpatio is designed to decipher the complex spatial relationships between different cell types. Using generative, multirange, multitype point process models, it captures intricate spatial interactions between cell types across various ranges simultaneously. By supplying a simple three-column input of cell coordinates and types, CytoSpatio produces interaction coefficients that delineate both the inherent and apparent spatial relationships among cell types. In addition, it generates synthetic tissue images which preserve the spatial relationships observed in training images.
 
