@@ -1,5 +1,6 @@
 # CytoSpatio: Learning Cell Type Spatial Relationships
-Haoran Chen and Robert F. Murphy\
+Haoran Chen, Yangyuan Zhang and Robert F. Murphy\
+Ray and Stephanie Lane Computational Biology Department\
 Carnegie Mellon University\
 V0.1.0 Feb 11, 2025
 
