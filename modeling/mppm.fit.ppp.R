@@ -11,8 +11,11 @@ mppm.fit.ppp = function (Data, fmla, interaction = Poisson(), ..., iformula = NU
   ctrl <- do.call(glm.control, resolve.defaults(gcontrol, list(maxit = 50)))
 
   FIT <- glm(formula = fmla, family = quasi(link = "log", variance = "mu"), weights = .mpl.W * caseweight, data = subset(Data$moadf, Data$moadf$.mpl.SUBSET == "TRUE"), control = ctrl)
+  vcov_matrix <- vcov(FIT)
   raw_residuals = residuals(FIT, type = 'response')
-  FIT = strip_glm(FIT)
+  FIT <- strip_glm(FIT)
+  confidence <- compute_se_and_ci(FIT$coefficients, vcov_matrix)
+  
   deviants <- deviance(FIT)
   env <- list2env(Data$moadf, parent = sys.frame(sys.nframe()))
   environment(FIT$terms) <- env
@@ -36,7 +39,7 @@ mppm.fit.ppp = function (Data, fmla, interaction = Poisson(), ..., iformula = NU
                  Inter = Inter,
                  formula = formula, trend = trend, iformula = iformula, 
                  random = random, npat = npat, data = Data$data, Y = Data$Y, maxlogpl = maxlogpl, 
-                 datadf = Data$datadf, residuals = raw_residuals)
+                 datadf = Data$datadf, residuals = raw_residuals, confidence = confidence)
   class(result) <- c("mppm", class(result))
   return(result)
 }
@@ -85,7 +88,7 @@ strip_glm <- function(cm) {
   cm$residuals = NULL
   cm$fitted.values = NULL
   cm$effects = NULL
-  cm$qr$qr = NULL  
+  cm$qr$qr = NULL
   cm$linear.predictors = NULL
   cm$weights = NULL
   cm$prior.weights = NULL
@@ -102,3 +105,20 @@ strip_glm <- function(cm) {
   
   return(cm)
 }
+
+compute_se_and_ci <- function(coef_values, vcov_matrix) {
+  se <- sqrt(diag(vcov_matrix))  
+  
+  ci_lower <- coef_values - 1.96 * se  
+  ci_upper <- coef_values + 1.96 * se  
+  
+  results <- data.frame(
+    Coefficient = coef_values,
+    SE = se,
+    CI95_Lower = ci_lower,
+    CI95_Upper = ci_upper
+  )
+  
+  return(results)
+}
+

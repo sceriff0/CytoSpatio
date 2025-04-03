@@ -22,13 +22,21 @@ multirange_multitype_modeling <- function(input_file, output_dir, tr, ir, hr) {
     
   model_train <- mppm.fit.ppp(Data=Quad_all_all, formula) 
   coef <- model_train$Fit$FIT$coefficients
-    
+  confid <- model_train$confidence
+  resid <- model_train$residuals
+
+  # commented out to save disk space
+  #filename <- file.path(output_dir, paste0(input_file_name, "_wholemodel_TR_", tr, "_IR_", ir, "_HR_", hr, ".Rda"))
+  #save(model_train, file = filename)
 
   filename <- file.path(output_dir, paste0(input_file_name, "_model_TR_", tr, "_IR_", ir, "_HR_", hr, ".Rda"))
-  save(coef, family, formula, file = filename)
+  save(coef, family, formula, confid, file = filename)
   
+  #confidence returns coeff + SE + Confidence Intervals so save "confid" rather than "coef"
   filename <- file.path(output_dir, paste0(input_file_name, "_coef_TR_", tr, "_IR_", ir, "_HR_", hr, ".csv"))
-  write.csv(coef, file = filename)
+  write.csv(confid, file = filename)
+  filename <- file.path(output_dir, paste0(input_file_name, "_resid_TR_", tr, "_IR_", ir, "_HR_", hr, ".csv"))
+  write.csv(resid, file = filename)
   cat("Training completed and model saved!\n")
 
   # avg_devi_per_cell <- get_devi(training_original, coef, fmla, family)

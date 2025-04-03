@@ -1,11 +1,10 @@
-# cytospatio.R
+# cytospatio_nosimulation.R
 
 # Source the function files
 source("quadrature_scheme_generation.R")
 source("quadrature_scheme_concatenation.R")
 source("multirange_multitype_modeling.R")
 source("visualization.R")
-source("simulation.R")
 
 packages <- c("spatstat", "spatstat.utils", "spatstat.data", "ggplot2", 
               "dplyr", "permute", "data.table", "igraph", "deldir", "sf")
@@ -17,14 +16,14 @@ for (pkg in packages) {
 }
 
 # Main function: cytospatio
-cytospatio <- function(input_file, output_dir, TR = 500, IR = 100, HR = 1) {
-   
+cytospatio_nosimulation <- function(input_file, output_dir, TR = 500, IR = 100, HR = 1) {
+
   print("CytoSpatio v0.2.0")
 
   if (!file.exists(output_dir)) {
     dir.create(file.path(".",output_dir))
   }
-
+   
   # Generate quadrature schemes for each SR value based on TR and IR
   schemes_list <- list()
   for (SR in seq(IR, TR, by = IR)) {
@@ -40,8 +39,5 @@ cytospatio <- function(input_file, output_dir, TR = 500, IR = 100, HR = 1) {
 
   # Visualize the spatial relationships between cell types
   visualization(input_file, output_dir, TR, IR, HR)
-
-  # Simulate the synthetic tissue image with learned spatial relationships
-  simulation(input_file, output_dir, TR, IR, HR)
 }
 

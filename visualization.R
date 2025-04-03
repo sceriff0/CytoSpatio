@@ -9,7 +9,9 @@ visualization <- function(input_file, output_dir, tr, ir, hr) {
   
   filename <- file.path(output_dir, paste0(input_file_name, "_model_TR_", tr, "_IR_", ir, "_HR_", hr, ".Rda"))
   load(file = filename)
-  
+  #the model file has variables "coef"    "confid"  "family"  "formula"
+  #confid contains the columns "Coefficient" "SE"  "CI95_Lower"  "CI95_Upper"   
+
   # Process coefficient intensities
   coef_intensity <- coef[1:cell_type_num]
   coef_intensity <- ifelse(1:cell_type_num == 1, 
@@ -17,9 +19,9 @@ visualization <- function(input_file, output_dir, tr, ir, hr) {
                            coef_intensity[1:cell_type_num] + coef_intensity[1])
   
   coef_interaction <- coef[(cell_type_num + 1):length(coef)]
-  
+
   # Process cell type links and nodes
-  cell_type_links = process_links(coef_interaction, cell_type_num, tr, ir)
+  cell_type_links = process_links(confid, cell_type_num, tr, ir)
   cell_type_nodes_list = process_nodes(coef_interaction, cell_type_num)
   cell_type_nodes = cell_type_nodes_list[[1]]
   cell_type_self_interaction_links = cell_type_nodes_list[[2]]
@@ -37,22 +39,24 @@ initialize_dataframe <- function(ncols, col_names, nrow=NULL) {
 }
 
 # Process interactions between different cell types
-process_links <- function(coef_interaction, cell_type_num, tr, ir) {
+process_links <- function(confid, cell_type_num, tr, ir) {
   
   cell_type_links <- initialize_dataframe(4, c('from', 'to', 'weight', 'sign'))
-  interaction_names <- names(coef_interaction)
   idx <- 1
   
   for (i in 1:(cell_type_num-1)){
     for (j in (i+1):(cell_type_num)){
       for (r in seq(ir, tr, ir)){
         
-        current_interaction_name <- paste('InteractionmarkX', cell_type_list[i], 'xX', cell_type_list[j], 'x', r, sep = '')
-        current_coef <- coef_interaction[grep(current_interaction_name, interaction_names)]
-        current_sign <- ifelse(sign(current_coef) == 1, 'darkblue', 'darkred')
+        current_interaction_name <- paste("InteractionmarkX", cell_type_list[i], "xX", cell_type_list[j], "x", r, sep = '')
+        current_coef <- confid[current_interaction_name,"Coefficient"]
+
+        if (confid[current_interaction_name,"CI95_Lower"] > 0 | confid[current_interaction_name,"CI95_Upper"] < 0){
+           current_sign <- ifelse(sign(current_coef) == 1, 'darkblue', 'darkred')
         
-        cell_type_links[idx,] <- c(cell_type_list[i], cell_type_list[j], abs(current_coef), current_sign)
-        idx <- idx + 1
+           cell_type_links[idx,] <- c(cell_type_list[i], cell_type_list[j], abs(current_coef), current_sign)
+           idx <- idx + 1
+        }
       }
     }
   }
