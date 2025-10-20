@@ -95,20 +95,18 @@ process_nodes <- function(coef_interaction, cell_type_num) {
 
 
 process_and_visualize <- function(interaction_type, cell_type_links, cell_type_nodes, input_file_name, output_dir, tr, ir, hr) {
-  if (interaction_type == 'pairwise'){
-    x = c(0, -0.951, 0.951, -0.588, 0.588)
-    y = c(1, 0.309, 0.309, -0.809, -0.809)
-    cell_type_nodes = cbind(cell_type_nodes, x, y)
-  } else if (interaction_type == 'self'){
-    x = c(0, 0, 0, 0, 0)
-    y = c(4, 3, 2, 1, 0)
-    cell_type_nodes = cbind(cell_type_nodes, x, y)
-    cell_type_nodes = cell_type_nodes
-    cell_type_nodes_copy = cell_type_nodes
-    cell_type_nodes_copy$cell_type = paste(cell_type_nodes_copy$cell_type,2,sep='_')
-    cell_type_nodes_copy$x = cell_type_nodes_copy$x + 1
-    cell_type_nodes = rbind(cell_type_nodes, cell_type_nodes_copy)
-  }
+if (interaction_type == 'pairwise'){
+  n <- nrow(cell_type_nodes)
+  angles <- seq(0, 2*pi, length.out = n + 1)[- (n + 1)]
+  x <- cos(angles)
+  y <- sin(angles)
+  cell_type_nodes <- cbind(cell_type_nodes, x, y)
+} else if (interaction_type == 'self'){
+  n <- nrow(cell_type_nodes)
+  x <- rep(0, n)
+  y <- seq(n, 1)
+  cell_type_nodes <- cbind(cell_type_nodes, x, y)
+}
   
   
   # Scaling functions
